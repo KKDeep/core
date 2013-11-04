@@ -30,10 +30,10 @@ class Quota extends Wrapper {
 			// scan in progress ?
 			if ($data['size'] === -1 && $path === ''){
 				// use another method
-				$sql = 'SELECT SUM(size) FROM *PREFIX*filecache ' .
-					'WHERE mimetype <> (SELECT id FROM *PREFIX*mimetypes WHERE mimetype=\'httpd/unix-directory\') ' .
-					'AND storage = (SELECT `numeric_id` FROM `*PREFIX*storages` WHERE `id` = ?) ' .
-					'AND size >= 0';
+				$sql = 'SELECT SUM(`size`) FROM `*PREFIX*filecache` ' .
+					'WHERE `mimetype` <> (SELECT `id` FROM `*PREFIX*mimetypes` WHERE `mimetype`=\'httpd/unix-directory\') ' .
+					'AND `storage` = (SELECT `numeric_id` FROM `*PREFIX*storages` WHERE `id` = ?) ' .
+					'AND `size` >= 0';
 				$result = \OC_DB::executeAudited($sql, array($this->storage->getId()));
 				if ($row = $result->fetchRow()) {
 					list($totalSize) = array_values($row);
