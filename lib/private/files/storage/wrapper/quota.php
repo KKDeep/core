@@ -34,7 +34,12 @@ class Quota extends Wrapper {
 					'WHERE `mimetype` <> (SELECT `id` FROM `*PREFIX*mimetypes` WHERE `mimetype`=\'httpd/unix-directory\') ' .
 					'AND `storage` = (SELECT `numeric_id` FROM `*PREFIX*storages` WHERE `id` = ?) ' .
 					'AND `size` >= 0';
-				$result = \OC_DB::executeAudited($sql, array($this->storage->getId()));
+				try {
+					$result = \OC_DB::executeAudited($sql, array($this->storage->getId()));
+				} catch (\Exception $e) {
+					\OC_Log::write('core', 'Exception summing up file sizes in DB: ' . $e->getmessage(), \OC_Log::ERROR);
+					return \OC\Files\SPACE_NOT_COMPUTED;
+				}
 				if ($row = $result->fetchRow()) {
 					list($totalSize) = array_values($row);
 					return $totalSize;
